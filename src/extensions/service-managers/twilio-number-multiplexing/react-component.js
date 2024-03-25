@@ -13,7 +13,9 @@ export class OrgConfig extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      areaCodes: this.props.serviceManagerInfo.data.areaCodes
+      areaCodes: {
+        areaCodes: this.props.serviceManagerInfo.data.areaCodes
+      }
     };
   }
 
