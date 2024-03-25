@@ -22,9 +22,9 @@ export class OrgConfig extends React.Component {
     const codeSchema = yup.object({
       areaCodes: yup
         .string()
+        .nullable()
         .transform(currentValue => currentValue.split(","))
         .array()
-        .nullable()
         .of(
           yup
             .string()
