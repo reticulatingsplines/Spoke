@@ -23,7 +23,7 @@ export class OrgConfig extends React.Component {
       areaCodes: yup
         .string()
         .nullable()
-        .transform(currentValue => currentValue.split(","))
+        .json()
         .array()
         .of(
           yup
