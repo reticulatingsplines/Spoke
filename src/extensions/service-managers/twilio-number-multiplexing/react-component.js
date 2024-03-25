@@ -21,9 +21,10 @@ export class OrgConfig extends React.Component {
     console.log("twilio-number-multiplexing OrgConfig", this.props);
     const codeSchema = yup.object({
       areaCodes: yup
-        .nullable()
+        .string()
         .transform(currentValue => currentValue.split(","))
         .array()
+        .nullable()
         .of(
           yup
             .string()
