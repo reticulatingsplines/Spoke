@@ -22,7 +22,6 @@ export class OrgConfig extends React.Component {
     const codeSchema = yup.object({
       areaCodes: yup
         .array()
-        .json()
         .of(
           yup
             .string()
