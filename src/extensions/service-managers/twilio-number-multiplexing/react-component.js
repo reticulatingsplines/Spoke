@@ -26,7 +26,7 @@ export class OrgConfig extends React.Component {
           yup
             .string()
             .length(3)
-            .regex("[0-9]{3}", { excludeEmptyString: true })
+            .matches("[0-9]{3}", { excludeEmptyString: true })
             .nullable()
         )
         .nullable()
