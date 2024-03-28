@@ -13,24 +13,18 @@ export class OrgConfig extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      areaCodes: {
+      data: {
         areaCodes: this.props.serviceManagerInfo.data.areaCodes
       }
     };
   }
 
   render() {
+    console.log("this.props.serviceManagerInfo.data", this.props.serviceManagerInfo.data);
     console.log("twilio-number-multiplexing OrgConfig", this.props);
     const codeSchema = yup.object({
       areaCodes: yup
-        .array()
-        .of(
-          yup
-            .string()
-            .length(3)
-            .matches("[0-9]{3}", { excludeEmptyString: true })
-            .nullable()
-        )
+        .string()
         .nullable()
     });
     return (
@@ -45,15 +39,23 @@ export class OrgConfig extends React.Component {
             ref={this.form}
             schema={codeSchema}
             onSubmit={x => {
-              console.log("onSubmit", x);
-              this.props.onSubmit(x);
+              //console.log("x is", x);
+              //console.log("the concat is ", "[".concat(x.areaCodes,"]"));
+              this.setState({
+                data: {
+                  areaCodes: JSON.parse("[".concat(x.areaCodes,"]"))
+                }
+              });
+              //console.log("onSubmit", this.state.data);
+              this.props.onSubmit({areaCodes: this.state.data.areaCodes});
             }}
-            defaultValue={this.state.areaCodes}
+            defaultValue={this.state.data}
           >
             <Form.Field
               as={GSTextField}
-              label="Area Codes to Use"
+              label="Permitted Area Code(s) for this Organization:"
               name="areaCodes"
+              helperText="Separate multiple area codes using commas, e.g. '123, 456'. An empty/blank value will allow any available number to be used for texting."
               fullWidth
             />
             <div className={css(this.props.styles.buttonRow)}>
