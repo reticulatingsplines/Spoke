@@ -371,11 +371,13 @@ const campaignContactCache = {
     // after an initial outgoing message, there should always be a 'last message'
     // The cached version uses the info added in the updateStatus (of a contact) method below
     // which is called for incoming AND outgoing messages.
+    console.log("\n-------\nlookupByCell call\n-------", cell, service, messageServiceSid, userNumber, bailWithoutCache);
+    console.log("-------");
     if (r.redis && CONTACT_CACHE_ENABLED) {
       const cellData = await r.redis.getAsync(
         cellTargetKey(cell, messageServiceSid || userNumber)
       );
-      // console.log('lookupByCell cache', cell, service, messageServiceSid, cellData)
+      console.log('lookupByCell cache', cell, service, messageServiceSid, cellData);
       if (cellData) {
         const [
           campaign_contact_id, // eslint-disable-line camelcase
@@ -401,19 +403,15 @@ const campaignContactCache = {
         contact_number: cell,
         service
       })
-      .orderBy("message.created_at", "desc")
-      .limit(1);
+      .orderBy("message.created_at", "desc");
+      // .limit(1); --- doesn't this make the code below pointless? cmon
 
-    if (messageServiceSid) {
-      messageQuery = messageQuery.where(
-        "messageservice_sid",
-        messageServiceSid
-      );
-    } else {
+    if (userNumber) {
       messageQuery = messageQuery
-        .whereNull("messageservice_sid")
-        .where("user_number", userNumber);
-    }
+      .where("user_number", userNumber)
+      .limit(1);
+    };
+
     // we get the campaign_id so we can cache errorCount and needsResponseCount
     messageQuery = messageQuery
       .join(
