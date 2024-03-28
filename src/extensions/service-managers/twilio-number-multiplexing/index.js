@@ -32,8 +32,8 @@ export async function onMessageSend({
   serviceManagerData
 }) {
   const orgAreaCodes =
-    organization.features && organization.features.includes("areaCodes")
-      ? JSON.parse(organization.features).areaCodes
+    organization.features && organization.features.includes("twilio_number_multiplexing")
+      ? JSON.parse(organization.features).twilio_number_multiplexing.areaCodes
       : [];
 
   console.log(
@@ -41,8 +41,9 @@ export async function onMessageSend({
     message.id,
     message.user_number,
     serviceManagerData,
-    orgAreaCodes
   );
+
+  console.log("orgAreaCodes", orgAreaCodes);
 
   if (
     (message.user_number &&
@@ -60,7 +61,6 @@ export async function onMessageSend({
   );
   const selectedPhone = await r
     .knex("owned_phone_number")
-    .where({ service: serviceName })
     .whereIn("area_code", orgAreaCodes)
     .orderByRaw("random()")
     .select("phone_number")
@@ -71,8 +71,10 @@ export async function onMessageSend({
     selectedPhone
   );
 
-  if (selectedPhone && selectedPhone.phone_number) {
-    return { user_number: selectedPhone.phone_number };
+  if (selectedPhone) {
+    const smData = { user_number: selectedPhone.phone_number };
+    console.log("Data being provided as serviceManagerData: ", smData);
+    return smData;
   } else {
     console.log(
       "twilio-number-multiplexing.onMessageSend found no suitable number to send message with!",
@@ -180,14 +182,14 @@ export async function onCampaignContactLoad({
 
 export async function getOrganizationData({ organization }) {
   const orgAreaCodes =
-    organization.features && organization.features.includes("areaCodes")
-      ? JSON.parse(organization.features).areaCodes
-      : [];
+    organization.features && organization.features.includes("twilio_number_multiplexing")
+      ? JSON.parse(organization.features).twilio_number_multiplexing
+      : {areaCodes: []};
   return {
     // data is any JSON-able data that you want to send.
     // This can/should map to the return value if you implement onOrganizationUpdateSignal()
     // which will then get updated data in the Settings component on-save
-    data: { areaCodes: orgAreaCodes },
+    data: orgAreaCodes,
     // fullyConfigured: null means (more) configuration is optional -- maybe not required to be enabled
     // fullyConfigured: true means it is fully enabled and configured for operation
     // fullyConfigured: false means more configuration is REQUIRED (i.e. manager is necessary and needs more configuration for Spoke campaigns to run)
@@ -219,14 +221,24 @@ export async function onOrganizationUpdateSignal({
   user,
   updateData
 }) {
-  const orgChanges = {
+  let orgChanges = {
     features: getFeatures(organization)
   };
-  const setAreaCodes = getFeatures(organization).areaCodes || [];
+  const setAreaCodes = orgChanges.features.twilio_number_multiplexing;
+  orgChanges.features.twilio_number_multiplexing = updateData || [];
   console.log(
     "organization: %s\nuser: %s\nupdate data: %s\n:orgChanges: %s\nsetAreaCodes: %s",
-    [organization, user, updateData, orgChanges, setAreaCodes]
+    organization,
+    user,
+    updateData,
+    orgChanges,
+    setAreaCodes
   );
+  await cacheableData.organization.clear(organization.id);
+  await r
+    .knex("organization")
+    .where("id", organization.id)
+    .update(orgChanges);
 
   return {
     data: updateData,

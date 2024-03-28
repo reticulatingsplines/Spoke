@@ -114,9 +114,9 @@ export class OrgConfig extends React.Component {
             />
             Settings for this organization:
             <TableContainer>
-              <Table style={{ "background-color": "red" }}>
+              <Table style={{ "backgroundColor": "red" }}>
                 <TableBody
-                  displayRowCheckbox={false}
+                  displayrowcheckbox={false}
                   style={inlineStyles.shadeBox}
                 >
                   <TableRow>

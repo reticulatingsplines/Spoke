@@ -101,7 +101,7 @@ const incomingMessageMatching = async (messageInstance, activeCellFound) => {
   if (!activeCellFound) {
     // No active thread to attach message to. This should be very RARE
     // This could happen way after a campaign is closed and a contact responds 'very late'
-    // or e.g. gives the 'number for moveon' to another person altogether that tries to text it.
+    // or e.g. gives the 'number for the UAW organizer' to another person altogether that tries to text it.
     console.log(
       "messageCache ORPHAN MESSAGE",
       messageInstance,
@@ -127,6 +127,7 @@ const incomingMessageMatching = async (messageInstance, activeCellFound) => {
     const messageThread = await query({
       campaignContactId: activeCellFound.campaign_contact_id
     });
+    console.log("cachable_queries/message.js:130:activeCellFound", activeCellFound);
     const redundant = messageThread.filter(
       m => m.service_id && m.service_id === messageInstance.service_id
     );
