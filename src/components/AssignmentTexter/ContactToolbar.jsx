@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   contactArea: {
     // give room for prev/next arrows
-    maxWidth: "calc(100% - 200px)"
+    maxWidth: "calc(90%)"
   },
   navigation: {
     flexGrow: 0,
@@ -143,7 +143,7 @@ const ContactToolbar = function ContactToolbar(props) {
           {formattedLocalTime} - {formattedLocation}
         </div>
         <div className={css(styles.titleBig)} style={{ fontSize: "24px" }}>
-          {campaignContact.firstName} {campaignContact.lastName} - {campaignContact.cell}
+          TEST! {campaignContact.firstName} {campaignContact.lastName} - {campaignContact.cell}
         </div>
       </div>
 
