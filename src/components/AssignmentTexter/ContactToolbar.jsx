@@ -143,7 +143,7 @@ const ContactToolbar = function ContactToolbar(props) {
           {formattedLocalTime} - {formattedLocation}
         </div>
         <div className={css(styles.titleBig)} style={{ fontSize: "24px" }}>
-          TEST! {campaignContact.firstName} {campaignContact.lastName} - {campaignContact.cell}
+          {campaignContact.firstName} {campaignContact.lastName} - ({campaignContact.cell.slice(2,5)}) {campaignContact.cell.slice(5,8)}-{campaignContact.cell.slice(8)}
         </div>
       </div>
 
