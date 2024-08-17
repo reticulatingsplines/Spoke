@@ -21,7 +21,7 @@
     "clean": "rm -rf $OUTPUT_DIR",
     "lint": "eslint --fix --ext js --ext jsx src",
     "process-message-csv": "./dev-tools/babel-run-with-env.js ./src/workers/process-message-csv.js",
-    "prod-build-client": "yarn add -D webpack-cli && webpack --config ./webpack/config.js",
+    "prod-build-client": "webpack --config ./webpack/config.js",
     "prod-maybe-build-client": "if [ \"$ASSETS_DIR_PREBUILT\" != \"\" ] ; then npm run install-prebuilt-assets; else npm run prod-build-client; fi",
     "prod-build-server": "babel ./src  -d ./build/server/ --source-maps --copy-files --ignore \"src/components,src/containers,src/client,src/styles,./src/routes.jsx\"; babel ./migrations -d ./build/server/migrations/ --source-maps --copy-files",
     "prod-build": "npm run clean && npm run prod-build-client && npm run prod-build-server",
@@ -211,7 +211,7 @@
     "sqlite3": "^5.1.2",
     "supertest": "^6.3.4",
     "wait-on": "^2.1.0",
-    "webpack-cli": "^4.10.0",
+    "webpack-cli": "^5.1.4",
     "webpack-dev-server": "3"
   },
   "lint-staged": {
