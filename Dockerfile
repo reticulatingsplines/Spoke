@@ -12,10 +12,10 @@ ENV NODE_ENV=production \
 
 COPY . /spoke
 WORKDIR /spoke
-RUN yarn add -D webpack-cli && \
-    yarn install --ignore-scripts  --non-interactive --frozen-lockfile && \
+RUN yarn install --ignore-scripts  --non-interactive --frozen-lockfile && \
     yarn run prod-build && \
     rm -rf node_modules && \
+    yarn add -D webpack-cli && \
     yarn install --production --ignore-scripts
 
 # Spoke Runtime
